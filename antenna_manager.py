@@ -4,6 +4,7 @@ import asyncio
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from antenna_system import AntennaSystem
 
@@ -12,6 +13,13 @@ class AntennaManager(FastAPI):
 
     def __init__(self, antenna_system: AntennaSystem=None):
         super().__init__()
+        self.add_middleware( # CORS
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+
         self.active_connections_queues = []
         self.latest_message = None
         self.antenna_system = antenna_system

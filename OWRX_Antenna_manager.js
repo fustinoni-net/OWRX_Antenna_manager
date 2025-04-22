@@ -1,7 +1,11 @@
 // Antenna manager UI plugin for OpenWebRX+
 // License: MIT
 
+// to use this, you need reverse proxy (like nginx) which will redirect the /switch path to the backend port
 Plugins.OWRX_Antenna_manager.API_URL ??= `${window.location.origin}/switch`;
+
+// used in development
+//Plugins.OWRX_Antenna_manager.API_URL = `http://localhost:8000`;
 
 Plugins.OWRX_Antenna_manager.no_css = true;
 

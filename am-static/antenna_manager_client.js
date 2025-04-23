@@ -10,7 +10,7 @@ async function loadAntennas() {
         const antennas = await response.json();
 
         // Get the select element
-        const selectElement = document.getElementById('antenna-switch');
+        const selectElement = document.getElementById('am-antenna-switch');
 
         // Clear any existing options
         selectElement.innerHTML = '';
@@ -30,9 +30,13 @@ async function loadAntennas() {
 function handleAntennaChange(event) {
     const selectedAntennaId = event.target.value;
 
-    // Call the /setAntenna/{antenna_id} endpoint
-    fetch(`/setAntenna/${selectedAntennaId}`, {
+    // Call the /setAntenna endpoint with antenna_id in the request body
+    fetch('/setAntenna', {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ antenna_id: selectedAntennaId }),
     })
         .then(response => {
             if (!response.ok) {
@@ -48,12 +52,11 @@ function handleAntennaChange(event) {
         });
 }
 
-
 // Function to listen for antenna events and display them
 function listenToAntennaEvents() {
     const eventSource = new EventSource('/antennasEvents');
-    const eventsDiv = document.getElementById('antennas-events');
-    const selectElement = document.getElementById('antenna-switch');
+    const eventsDiv = document.getElementById('am-antennas-events');
+    const selectElement = document.getElementById('am-antenna-switch');
 
     eventSource.onmessage = function(event) {
         // Parse the received message
@@ -76,15 +79,29 @@ function listenToAntennaEvents() {
     };
 }
 
-// Start listening to antenna events when the page loads
+
+// Call the function to load antennas when the page loads
 document.addEventListener('DOMContentLoaded', loadAntennas);
 
 // Add event listener to the select element
 document.addEventListener('DOMContentLoaded', () => {
-    const selectElement = document.getElementById('antenna-switch');
+    const selectElement = document.getElementById('am-antenna-switch');
     selectElement.addEventListener('change', handleAntennaChange);
 });
 
-// Call the function to load antennas when the page loads
 
-document.addEventListener('DOMContentLoaded', listenToAntennaEvents);
+
+// Start listening to antenna events when the page loads
+// document.addEventListener('DOMContentLoaded', listenToAntennaEvents);
+// Pause a bit to allow the antennas to be loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const selectElement = document.getElementById('am-antenna-switch');
+    selectElement.addEventListener('change', handleAntennaChange);
+
+    // Introduce a delay before starting to listen to antenna events
+    setTimeout(() => {
+        listenToAntennaEvents();
+    }, 100); // Delay in milliseconds (100ms = 0.1 seconds)
+});
+
+

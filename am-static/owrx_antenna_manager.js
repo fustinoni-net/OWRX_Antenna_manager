@@ -1,17 +1,14 @@
 // Antenna manager UI plugin for OpenWebRX+
 // License: MIT
 
-// to use this, you need reverse proxy (like nginx) which will redirect the /switch path to the backend port
-Plugins.OWRX_Antenna_manager.API_URL ??= `${window.location.origin}/switch`;
+Plugins.owrx_antenna_manager_API_URL ??= '';
+Plugins.owrx_antenna_manager.API_URL ??= Plugins.owrx_antenna_manager_API_URL;
 
-// used in development
-//Plugins.OWRX_Antenna_manager.API_URL = `http://localhost:8000`;
-
-Plugins.OWRX_Antenna_manager.no_css = true;
+Plugins.owrx_antenna_manager.no_css = true;
 
 // Init function of the plugin
-Plugins.OWRX_Antenna_manager.init = function () {
-    Plugins.OWRX_Antenna_manager.API_URL = Plugins.OWRX_Antenna_manager.API_URL.replace(/\/$/, '');
+Plugins.owrx_antenna_manager.init = function () {
+    Plugins.owrx_antenna_manager.API_URL = Plugins.owrx_antenna_manager.API_URL.replace(/\/$/, '');
 
     function createAntennaSelector() {
         const antSection = document.createElement('div');
@@ -26,21 +23,12 @@ Plugins.OWRX_Antenna_manager.init = function () {
         antPanelLine.appendChild(antGrid);
 
         const label = document.createElement('label');
-        label.setAttribute('for', 'antenna-switch');
+        label.setAttribute('for', 'am-antenna-switch');
         label.textContent = 'Select Antenna:';
         antGrid.appendChild(label);
 
         const select = document.createElement('select');
-        select.id = 'antenna-switch';
-        // const optionOff = document.createElement('option');
-        // optionOff.value = 'turn_off';
-        // optionOff.textContent = 'Dipole&nbsp;&nbsp;&nbsp;';
-        // select.appendChild(optionOff);
-        //
-        // const optionOn = document.createElement('option');
-        // optionOn.value = 'turn_on';
-        // optionOn.textContent = 'Vertical&nbsp;&nbsp;&nbsp;';
-        // select.appendChild(optionOn);
+        select.id = 'am-antenna-switch';
 
         antGrid.appendChild(select);
 
@@ -65,7 +53,7 @@ Plugins.OWRX_Antenna_manager.init = function () {
     async function loadAntennas() {
         try {
             // Fetch the antenna data from the server
-            const response = await fetch(Plugins.OWRX_Antenna_manager.API_URL + '/getAntennas');
+            const response = await fetch(Plugins.owrx_antenna_manager.API_URL + '/getAntennas');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -73,7 +61,7 @@ Plugins.OWRX_Antenna_manager.init = function () {
             const antennas = await response.json();
 
             // Get the select element
-            const selectElement = document.getElementById('antenna-switch');
+            const selectElement = document.getElementById('am-antenna-switch');
 
             // Clear any existing options
             selectElement.innerHTML = '';
@@ -94,9 +82,13 @@ Plugins.OWRX_Antenna_manager.init = function () {
     function handleAntennaChange(event) {
         const selectedAntennaId = event.target.value;
 
-        // Call the /setAntenna/{antenna_id} endpoint
-        fetch(`${Plugins.OWRX_Antenna_manager.API_URL}/setAntenna/${selectedAntennaId}`, {
+        // Call the /setAntenna endpoint with antenna_id in the request body
+        fetch('/setAntenna', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ antenna_id: selectedAntennaId }),
         })
             .then(response => {
                 if (!response.ok) {
@@ -114,14 +106,14 @@ Plugins.OWRX_Antenna_manager.init = function () {
 
     // Function to listen for antenna events and display them
     function listenToAntennaEvents() {
-        const eventSource = new EventSource(`${Plugins.OWRX_Antenna_manager.API_URL}/antennasEvents`);
+        const eventSource = new EventSource(`${Plugins.owrx_antenna_manager.API_URL}/antennasEvents`);
 
         eventSource.onmessage = function (event) {
             // Parse the received message
             const eventData = JSON.parse(event.data);
 
             if (eventData.id) {
-                const selectElement = document.getElementById('antenna-switch');
+                const selectElement = document.getElementById('am-antenna-switch');
                 if (selectElement.value != eventData.id) {
                     divlog(`Antenna switched to: ${eventData.name}<br>`); // log to the chat panel
                     selectElement.value = eventData.id;

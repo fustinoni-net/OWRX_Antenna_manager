@@ -2,6 +2,7 @@ import logging
 import signal
 import uvicorn
 from fastapi import Request
+from pydantic import BaseModel
 
 from antenna_manager import AntennaManager
 from antenna_system import DummyAntennaSystem
@@ -10,10 +11,14 @@ logging.basicConfig(level=logging.INFO)
 
 app = AntennaManager(DummyAntennaSystem())
 
-@app.post("/setAntenna/{antenna_id}")
-async def set_antenna(antenna_id: str):
-    logging.info(f"AntennaManager: Received switch state change request: {antenna_id}")
-    return app.set_used_antenna_by_id(antenna_id)
+class AntennaRequest(BaseModel):
+    antenna_id: str
+
+@app.post("/setAntenna")
+async def set_antenna(request: AntennaRequest):
+    logging.info(f"AntennaManager: Received switch state change request: {request.antenna_id}")
+    return app.set_used_antenna_by_id(request.antenna_id)
+
 
 @app.get("/getAntennas")
 async def get_antennas():

@@ -6,15 +6,15 @@ from pydantic import BaseModel
 
 from antenna_manager import AntennaManager
 from antenna_system import DummyAntennaSystem
-from esp_home_one_relay_antenna_system import esp_home_one_relay_antenna_system
+# from esp_home_one_relay_antenna_system import esp_home_one_relay_antenna_system
 
 logging.basicConfig(level=logging.INFO)
 
 class AntennaRequest(BaseModel):
     antenna_id: str
 
-# antenna_system = DummyAntennaSystem()
-antenna_system = esp_home_one_relay_antenna_system
+antenna_system = DummyAntennaSystem()
+# antenna_system = esp_home_one_relay_antenna_system
 
 with antenna_system:
     app = AntennaManager(antenna_system)

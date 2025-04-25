@@ -1,0 +1,16 @@
+services:
+  owrx_antenna_manager:
+    image: owrx_antenna_manager
+    build: .
+#    container_name: antenna-switch
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+#    environment:
+#      - MQTT_BROKER_URL=
+#      - MQTT_BROKER_PORT=
+#      - MQTT_USERNAME=
+#      - MQTT_PASSWORD=
+

@@ -77,11 +77,6 @@ class EspHomeOneRelayAntennaSystem(AntennaSystem):
         self.set_used_antenna(self.antennas[0]) # Default to the first antenna
         logging.info("EspHomeOneRelayAntennaSystem: Default antenna set to: %s", self.antennas[0].name)
 
-    def get_used_antenna(self) -> AntennaSystem.Antenna:
-        return self._current_antenna
-
-    def set_antenna_change_listener(self, antenna_has_changed: callable) -> None:
-        self.antenna_listener.append(antenna_has_changed)
 
     def _switch_antenna(self, antenna: AntennaSystem.Antenna):
         logging.log(logging.INFO, f"EspHomeOneRelayAntennaSystem: Switching to antenna: {antenna.name}")

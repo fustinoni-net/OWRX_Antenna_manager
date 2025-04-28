@@ -1,6 +1,6 @@
 # `esp_home_one_relay_antenna_system`
 
-This package provides an implementation of an antenna system that integrates with ESPHome devices using MQTT. It allows managing antennas by switching between them and notifying changes through MQTT topics.
+This package provides an implementation of an antenna system that connect to an antenna switch using MQTT. In particular, it is designed to work with [ESPHome-based](https://esphome.io/) devices that control antennas via a relay.
 
 ## Configuration Parameters
 
@@ -76,5 +76,3 @@ with antenna_system:
         signal.signal(signal.SIGINT, lambda sig, frame: app.on_shutdown())
         uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
-
-This setup allows the `antenna_manager_server` to manage antennas using the ESPHome-based relay system.

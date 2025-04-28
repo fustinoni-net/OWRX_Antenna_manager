@@ -1,56 +1,18 @@
 # OWRX+_Antenna_manager
 Antenna manager for OpenWebRX+
 
-How to test it:
+------DRAFT------
 
-run the script antenna_manager_server.py
+This software serves as a foundation for developing an antenna manager for OpenWebRX+. Its primary goals are:
 
-Open a web browser and go to the address: http://localhost:8000/am-static/antenna_manager.html
+- Enabling customization of the plugin and backend component (server) by simply extending a Python class (AntennaSystem).
+- Providing seamless two-way communication between the backend and the plugin to keep the antenna usage information synchronized across all open pages.
 
+The software consists of two main components: a server and a client.
 
--------DRAFT------
+- **Server**: Written in Python, it leverages the FastAPI framework to handle HTTP requests. It uses the Server-Sent Events (SSE) protocol to update the client with the current antenna in use in real time.
 
-This software is a starting point for developing an antenna manager for OpenWebRX+.
-
-It is composed of a server and a client part.
-
-
-The server part is written in Python and uses the FastAPI framework to handle the HTTP requests.
-Using the SSE (Server-Sent Events) protocol, the server updates the client with the current antenna in use.
-
-The client part is written in HTML and JavaScript and provide a html page to control the antenna manager that its usefull during the developing and testing fases and a plugin for OpenWebRX+.
-
-What you should do to adapt this software to your needs:
-1) Extend the class AntennaSystem as was done for DummyAntennaSystem to create your own antenna system.
-2) In the file antenna_manager_server.py, replace the DummyAntennaSystem with your own class in the line 
-
-```
-app = AntennaManager(DummyAntennaSystem()).
-```
-During the test fase can be useful the page:  http://localhost:8000/am-static/antenna_manager.html
-
-
-That's all ;-)
-
-How you can use it:
-1) Install the plugin in OpenWebRX+ by editing the file init.js under the directory "plugins/receiver" the location of which may vary depending on your installation. Add the lines:
-``` 
-    Plugins.owrx_antenna_manager_API_URL = 'the_url_of_the_server'; // Not olways necessary.
-    Plugins.load('the_url_of_the_server/am-static/owrx_antenna_manager.js');
-```
-
-2) Run the server with the command after installing the dependencies in a virtual environment:
-``` 
-    python -m venv venv
-    source venv/bin/activate
-``` 
-    pip install -r requirements.txt
-```
-    python antenna_manager_server.py
-```
-
-
--------DRAFT 2------
+- **Client**: Developed in HTML and JavaScript, it includes a web interface for controlling the antenna manager, which is particularly useful during development and testing phases, as well as a plugin for OpenWebRX+.
 
 
 # Customizing the Application with Your Own `AntennaSystem`
@@ -63,19 +25,27 @@ To create a custom `AntennaSystem`, follow these steps:
 
 1. **Extend the `AntennaSystem` Class**  
    Create a new class that inherits from the `AntennaSystem` abstract base class. Implement the required methods to define the behavior of your antenna system.
+   Be advise that the `AntennaSystem` class implements a context manager, so you can use it with the `with` statement to ensure proper resource management.
 
-2. **Implement Required Methods**  
-   Override the following methods in your custom class:
-   - `get_available_antennas`: Return the list of available antennas.
-   - `set_default_antenna`: Define the default antenna to be used.
-   - `get_used_antenna`: Return the currently used antenna.
-   - `_switch_antenna`: Implement the logic to switch between antennas.
+   
+
+2. **Implement Required Methods and constructor**
+   
+   - Override the constructor in your custom class:
+     - `__init__`: Initialize the antenna system and define the antennas list base on your requirements.
+     
+   - Override the following methods in your custom class:
+      - `__enter__`: Initialize and start all the services needed for the antenna system.
+      - `__exit__`: Stop all the services and clean up resources.
+      - `set_default_antenna`: Define the default antenna to be used.
+      - `_switch_antenna`: Implement the logic to switch between antennas.
 
 ### Example
 
 Here is an example of a custom `AntennaSystem`:
 
 ```python
+import logging
 from antenna_system import AntennaSystem
 
 class MyCustomAntennaSystem(AntennaSystem):
@@ -136,6 +106,14 @@ class MyCustomAntennaSystem(AntennaSystem):
    ```
 
    Use this page to test and control the antenna manager.
+
+## Using the Application with docker
+   Run the docker compose file with
+   
+   ```
+   docker-compose up -d
+   ```
+
 
 ## ESPHome Antenna System
 

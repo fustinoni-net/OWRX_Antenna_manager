@@ -41,7 +41,7 @@ class AntennaSystem(ABC):
         :param antenna:
         :return:
         """
-        ...
+        raise NotImplementedError("This method should be overridden by subclasses.")
 
 
     def _notify_antenna_change(self, antenna: Antenna):
@@ -53,7 +53,7 @@ class AntennaSystem(ABC):
         """
         Get the list of available antennas.
         """
-        raise NotImplementedError("This method should be overridden by subclasses.")
+        return self.antennas
 
 
     def set_default_antenna(self) -> None:
@@ -64,7 +64,7 @@ class AntennaSystem(ABC):
 
 
     def get_used_antenna(self) -> Antenna:
-        raise NotImplementedError("This method should be overridden by subclasses.")
+        return self._current_antenna
 
 
     def set_antenna_change_listener(self, antenna_has_changed: Callable[[Antenna], None]) -> None:
@@ -98,19 +98,10 @@ class DummyAntennaSystem(AntennaSystem):
         ]
 
 
-    def get_available_antennas(self) -> list[AntennaSystem.Antenna]:
-        return self.antennas
-
-
     def set_default_antenna(self) -> None:
         self.set_used_antenna(self.antennas[0]) # Default to the first antenna
         logging.info("DummyAntennaSystem: Default antenna set to: %s", self.antennas[0].name)
 
-    def get_used_antenna(self) -> AntennaSystem.Antenna:
-        return self._current_antenna
-
-    def set_antenna_change_listener(self, antenna_has_changed: callable) -> None:
-        self.antenna_listener.append(antenna_has_changed)
 
     def _switch_antenna(self, antenna: AntennaSystem.Antenna):
         logging.log(logging.INFO, f"DummyAntennaSystem: Switching to antenna: {antenna.name}")

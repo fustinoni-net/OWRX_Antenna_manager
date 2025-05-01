@@ -1,8 +1,7 @@
-# OWRX+_Antenna_manager
+# OWRX+ Antenna manager
 Antenna manager for OpenWebRX+
 
-------DRAFT------
-
+## Overview
 This software serves as a foundation for developing an antenna manager for OpenWebRX+. Its primary goals are:
 
 - Enabling customization of the plugin and backend component (server) by simply extending a Python class (AntennaSystem).
@@ -14,20 +13,21 @@ The software consists of two main components: a server and a client.
 
 - **Client**: Developed in HTML and JavaScript, it includes a web interface for controlling the antenna manager, which is particularly useful during development and testing phases, as well as a plugin for OpenWebRX+.
 
+**My sincere thanks go to Stanislav Lechev [0xAF] for his help in making the plugin.**
 
-# Customizing the Application with Your Own `AntennaSystem`
+
+## Customizing the Application with Your Own `AntennaSystem`
 
 This application is designed to be flexible and allows you to create your own `AntennaSystem` to meet your specific requirements. Below, we describe how to customize the application and use it effectively.
 
-## Creating Your Own `AntennaSystem`
+### Creating Your Own `AntennaSystem`
 
 To create a custom `AntennaSystem`, follow these steps:
 
 1. **Extend the `AntennaSystem` Class**  
    Create a new class that inherits from the `AntennaSystem` abstract base class. Implement the required methods to define the behavior of your antenna system.
    Be advise that the `AntennaSystem` class implements a context manager, so you can use it with the `with` statement to ensure proper resource management.
-
-   
+ 
 
 2. **Implement Required Methods and constructor**
    
@@ -82,6 +82,7 @@ class MyCustomAntennaSystem(AntennaSystem):
 
 ## Using the Application
 
+### Running the Application directly
 1. **Install Dependencies**  
    Create a virtual environment and install the required dependencies:
 
@@ -107,7 +108,7 @@ class MyCustomAntennaSystem(AntennaSystem):
 
    Use this page to test and control the antenna manager.
 
-## Using the Application with docker
+### Running the Application with docker
    Run the docker compose file with
    
    ```
@@ -127,3 +128,5 @@ antenna_system = esp_home_one_relay_antenna_system
 
 This allows seamless integration with ESPHome devices for antenna management.
 ```
+
+ 

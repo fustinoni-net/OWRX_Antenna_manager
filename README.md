@@ -82,6 +82,15 @@ class MyCustomAntennaSystem(AntennaSystem):
 
 ## Using the Application
 
+### Install the plugin in OpenWebRX+
+
+Install the plugin in OpenWebRX+ by editing the file init.js under the directory "plugins/receiver" the location of which may vary depending on your installation. Add the lines:
+``` 
+    Plugins.owrx_antenna_manager_API_URL = 'the_url_of_the_server'; // Not olways necessary.
+    Plugins.load('the_url_of_the_server/am-static/owrx_antenna_manager.js');
+```
+
+
 ### Running the Application directly
 1. **Install Dependencies**  
    Create a virtual environment and install the required dependencies:
@@ -126,7 +135,7 @@ from esp_home_one_relay_antenna_system import esp_home_one_relay_antenna_system
 antenna_system = esp_home_one_relay_antenna_system
 ```
 
-This allows seamless integration with ESPHome devices for antenna management.
-```
+See the README file in the directory esp_home_one_relay_antenna_system for more information.
+
 
  
